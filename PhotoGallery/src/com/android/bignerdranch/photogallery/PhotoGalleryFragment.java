@@ -1,15 +1,15 @@
 package com.android.bignerdranch.photogallery;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 
@@ -18,6 +18,8 @@ public class PhotoGalleryFragment extends Fragment {
 	
 	GridView mGridView;
 	ArrayList<GalleryItem> mItems;
+	
+	int mResultPage = 1;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,24 @@ public class PhotoGalleryFragment extends Fragment {
 		mGridView = (GridView)v.findViewById(R.id.gridView);
 		
 		setupAdapter();
+		
+		mGridView.setOnScrollListener(new OnScrollListener() {
+			
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				if (mGridView.getLastVisiblePosition() + 1 == totalItemCount) {
+					mResultPage++;
+					new FetchItemsTask().execute();
+				}
+			}
+		});
 		
 		return v;
 	}
@@ -52,7 +72,7 @@ public class PhotoGalleryFragment extends Fragment {
 	private class FetchItemsTask extends AsyncTask<Void, Void, ArrayList<GalleryItem>> {
 		@Override
 		protected ArrayList<GalleryItem> doInBackground(Void... params) {
-			return new FlickerFetchr().fetchItems(getActivity());
+			return new FlickerFetchr().fetchItems(mResultPage, getActivity());
 		}
 		
 		@Override

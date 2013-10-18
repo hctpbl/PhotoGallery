@@ -1,6 +1,5 @@
 package com.android.bignerdranch.photogallery;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,7 +7,6 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Properties;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -60,7 +58,7 @@ public class FlickerFetchr {
 		return new String(getUrlBytes(urlSpec));
 	}
 	
-	public ArrayList<GalleryItem> fetchItems(Context context) {
+	public ArrayList<GalleryItem> fetchItems(int page, Context context) {
 		AssetManager assetManager = context.getAssets();
 		String api_key = "";
 		InputStream is;
@@ -85,6 +83,7 @@ public class FlickerFetchr {
 					.appendQueryParameter("method", METHOD_GET_RECENT)
 					.appendQueryParameter("api_key", api_key)
 					.appendQueryParameter(PARAM_EXTRAS, EXTRA_SMALL_URL)
+					.appendQueryParameter("page", page + "")
 					.build().toString();
 			String xmlString = getUrl(url);
 			Log.i(TAG, "Received XML: " + xmlString);
