@@ -41,8 +41,6 @@ public class PhotoGalleryFragment extends Fragment {
 			
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
-				// TODO Auto-generated method stub
-				
 			}
 			
 			@Override
@@ -62,8 +60,10 @@ public class PhotoGalleryFragment extends Fragment {
 		if (getActivity() == null || mGridView == null) return;
 		
 		if (mItems != null) {
+			int position = mGridView.getFirstVisiblePosition();
 			mGridView.setAdapter(new ArrayAdapter<GalleryItem>(getActivity(),
 					android.R.layout.simple_gallery_item, mItems));
+			mGridView.setSelection(position);
 		} else {
 			mGridView.setAdapter(null);
 		}
@@ -77,7 +77,11 @@ public class PhotoGalleryFragment extends Fragment {
 		
 		@Override
 		protected void onPostExecute(ArrayList<GalleryItem> items) {
-			mItems = items;
+			if (mItems == null ) {
+				mItems = items;
+			} else {
+				mItems.addAll(items);
+			}
 			setupAdapter();
 		}
 	}
